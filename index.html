@@ -1,130 +1,304 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>ระบบประกาศ</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-
-    #announcementBox {
-      background: #f0f8ff;
-      padding: 15px;
-      border: 1px solid #007BFF;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
-
-    .admin-button {
-      padding: 10px 20px;
-      background: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    #adminModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #modalContent {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 400px;
-      max-width: 90%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    #closeBtn {
-      background-color: gray;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นาฬิกาสดใส</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 50%, #fce4ec 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .decorative-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .flower {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .flower:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .flower:nth-child(2) { top: 15%; right: 10%; animation-delay: 2s; }
+        .flower:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 4s; }
+        .flower:nth-child(4) { bottom: 15%; right: 15%; animation-delay: 1s; }
+        .flower:nth-child(5) { top: 50%; left: 5%; animation-delay: 3s; }
+        .flower:nth-child(6) { top: 60%; right: 8%; animation-delay: 5s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-3deg); }
+        }
+        
+        .clock-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+        
+        .clock-container:hover {
+            transform: scale(1.02);
+        }
+        
+        .title {
+            color: #6366f1;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        .time-display {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b9d, #f06292, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .period {
+            font-size: 1.2rem;
+            color: #f06292;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        
+        .date-display {
+            color: #9c27b0;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        
+        .weather-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .weather-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .weather-item:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .weather-icon {
+            font-size: 1.8rem;
+        }
+        
+        .weather-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #f06292;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+            margin: 0 5px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        @media (max-width: 768px) {
+            .clock-container {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .time-display {
+                font-size: 2.5rem;
+            }
+            
+            .title {
+                font-size: 1.4rem;
+            }
+            
+            .weather-icons {
+                gap: 15px;
+            }
+            
+            .weather-item {
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <h1>📢 ประกาศ</h1>
-  <div id="announcementBox">ไม่มีประกาศในขณะนี้</div>
-
-  <button class="admin-button" onclick="openAdminPanel()">เข้าสู่แอดมิน</button>
-
-  <!-- Modal สำหรับแอดมิน -->
-  <div id="adminModal">
-    <div id="modalContent">
-      <h2>Admin Panel</h2>
-      <input type="password" id="adminPassword" placeholder="กรอกรหัสผ่าน">
-      <textarea id="announcementInput" rows="4" placeholder="พิมพ์ประกาศที่นี่..."></textarea>
-      <button class="admin-button" onclick="announce()">ประกาศ</button>
-      <button class="admin-button" id="closeBtn" onclick="closeAdminModal()">ปิด</button>
+    <div class="decorative-elements">
+        <div class="flower">🌸</div>
+        <div class="flower">✨</div>
+        <div class="flower">🌈</div>
+        <div class="flower">⭐</div>
+        <div class="flower">☀️</div>
+        <div class="flower">🌟</div>
     </div>
-  </div>
+    
+    <div class="clock-container">
+        <h1 class="title">นาฬิกาสดใส</h1>
+        <p class="subtitle">เวลาปัจจุบันของคุณ</p>
+        
+        <div class="time-display" id="timeDisplay">00:00:00</div>
+        <div class="period" id="period">AM</div>
+        <div class="pulse-dot"></div>
+        
+        <div class="date-display" id="dateDisplay">วันอังคารที่ 10 มิถุนายน 2568</div>
+        
+        <div class="weather-icons">
+            <div class="weather-item" title="เช้า">
+                <div class="weather-icon">🌅</div>
+                <div class="weather-label">เช้า</div>
+            </div>
+            <div class="weather-item" title="กลางวัน">
+                <div class="weather-icon">☀️</div>
+                <div class="weather-label">กลางวัน</div>
+            </div>
+            <div class="weather-item" title="เย็น">
+                <div class="weather-icon">🌆</div>
+                <div class="weather-label">เย็น</div>
+            </div>
+            <div class="weather-item" title="กลางคืน">
+                <div class="weather-icon">🌙</div>
+                <div class="weather-label">กลางคืน</div>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    const correctPassword = "1234"; // แก้ไขรหัสผ่านที่นี่
-
-    function openAdminPanel() {
-      const pass = prompt("กรอกรหัสผ่านเพื่อเข้าสู่ระบบ:");
-      if (pass === correctPassword) {
-        document.getElementById("adminModal").style.display = "flex";
-      } else {
-        alert("รหัสผ่านไม่ถูกต้อง");
-      }
-    }
-
-    function closeAdminModal() {
-      document.getElementById("adminModal").style.display = "none";
-      document.getElementById("announcementInput").value = "";
-      document.getElementById("adminPassword").value = "";
-    }
-
-    function announce() {
-      const content = document.getElementById("announcementInput").value.trim();
-      if (content === "") {
-        alert("กรุณากรอกข้อความก่อนประกาศ");
-        return;
-      }
-
-      localStorage.setItem("announcement", content);
-      closeAdminModal();
-      alert("✅ ประกาศเรียบร้อยแล้ว");
-      showAnnouncement();
-    }
-
-    function showAnnouncement() {
-      const content = localStorage.getItem("announcement");
-      const box = document.getElementById("announcementBox");
-      if (content) {
-        box.textContent = content;
-      } else {
-        box.textContent = "ไม่มีประกาศในขณะนี้";
-      }
-    }
-
-    // โหลดประกาศเมื่อเปิดหน้าเว็บ
-    window.onload = function () {
-      showAnnouncement();
-    };
-  </script>
-
+    <script>
+        // Thai month names
+        const thaiMonths = [
+            'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+            'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+        ];
+        
+        // Thai day names
+        const thaiDays = [
+            'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'
+        ];
+        
+        function updateClock() {
+            const now = new Date();
+            
+            // Format time
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            // Determine AM/PM
+            const period = hours >= 12 ? 'PM' : 'AM';
+            
+            // Convert to 12-hour format
+            hours = hours % 12;
+            hours = hours ? hours : 12; // 0 should be 12
+            const formattedHours = hours.toString().padStart(2, '0');
+            
+            // Update time display
+            document.getElementById('timeDisplay').textContent = `${formattedHours}:${minutes}:${seconds}`;
+            document.getElementById('period').textContent = period;
+            
+            // Update date display
+            const dayName = thaiDays[now.getDay()];
+            const date = now.getDate();
+            const month = thaiMonths[now.getMonth()];
+            const year = now.getFullYear() + 543; // Convert to Buddhist year
+            
+            document.getElementById('dateDisplay').textContent = `วัน${dayName}ที่ ${date} ${month} ${year}`;
+            
+            // Update weather icons based on time of day
+            updateWeatherHighlight(hours + (period === 'PM' && hours !== 12 ? 12 : 0));
+        }
+        
+        function updateWeatherHighlight(hour24) {
+            const weatherItems = document.querySelectorAll('.weather-item');
+            
+            // Remove all highlights
+            weatherItems.forEach(item => {
+                item.style.background = 'rgba(255, 255, 255, 0.5)';
+                item.style.transform = 'translateY(0)';
+            });
+            
+            // Highlight current time period
+            let activeIndex = 0;
+            if (hour24 >= 6 && hour24 < 12) activeIndex = 0; // เช้า
+            else if (hour24 >= 12 && hour24 < 17) activeIndex = 1; // กลางวัน
+            else if (hour24 >= 17 && hour24 < 20) activeIndex = 2; // เย็น
+            else activeIndex = 3; // กลางคืน
+            
+            weatherItems[activeIndex].style.background = 'rgba(99, 102, 241, 0.2)';
+            weatherItems[activeIndex].style.transform = 'translateY(-3px)';
+        }
+        
+        // Update clock every second
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        // Add click animations to weather items
+        document.querySelectorAll('.weather-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px) scale(1)';
+                }, 150);
+            });
+        });
+    </script>
 </body>
 </html>
